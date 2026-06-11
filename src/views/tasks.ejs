@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  VIEW
+  ------------------------------------------------------------
+  The VIEW's only job is to present data it is GIVEN.
+  It does not fetch data, does not decide rules. It receives
+  `tasks` from the controller and renders HTML.
+  The <%= %> / <% %> tags are EJS: they let us mix data into HTML.
+  ============================================================
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>MVC Task Manager</title>
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 520px; margin: 40px auto; }
+      h1 { font-size: 1.4rem; }
+      ul { list-style: none; padding: 0; }
+      li { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid #eee; }
+      .done { text-decoration: line-through; color: #999; }
+      form.inline { display: inline; margin: 0; }
+      .title { flex: 1; }
+      button { cursor: pointer; }
+      .new { display: flex; gap: 8px; margin-bottom: 20px; }
+      .new input { flex: 1; padding: 6px; }
+    </style>
+  </head>
+  <body>
+    <h1>Task Manager <small>(MVC demo)</small></h1>
+
+    <!-- Creating a task: the form POSTs to /tasks -->
+    <form class="new" action="/tasks" method="POST">
+      <input name="title" placeholder="New task..." autofocus />
+      <button type="submit">Add</button>
+    </form>
+
+    <ul>
+      <% tasks.forEach(function (task) { %>
+        <li>
+          <!-- Toggle done/undone -->
+          <form class="inline" action="/tasks/<%= task.id %>/toggle" method="POST">
+            <button type="submit"><%= task.done ? "↩" : "✓" %></button>
+          </form>
+
+          <span class="title <%= task.done ? 'done' : '' %>"><%= task.title %></span>
+
+          <!-- Delete -->
+          <form class="inline" action="/tasks/<%= task.id %>/delete" method="POST">
+            <button type="submit">✕</button>
+          </form>
+        </li>
+      <% }); %>
+    </ul>
+
+    <% if (tasks.length === 0) { %>
+      <p>No tasks yet. Add one above.</p>
+    <% } %>
+  </body>
+</html>
